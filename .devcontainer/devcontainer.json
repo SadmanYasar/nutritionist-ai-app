@@ -1,0 +1,38 @@
+{
+    "name": "Node.js & TypeScript",
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    // "features": {},
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        8081
+    ],
+    "initializeCommand": "bash .devcontainer/initializeCommand.sh",
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+    // Configure tool-specific properties.
+    // "customizations": {},
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root",
+    "settings": {
+        "workbench.colorTheme": "Night Owl",
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "typescript.validate.enable": false,
+        "eslint.alwaysShowStatus": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        }
+    },
+    "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-tslint-plugin"
+    ],
+    "runArgs": [
+        "-p=8081:8081",
+        "--env-file",
+        ".devcontainer/.env"
+    ]
+}
