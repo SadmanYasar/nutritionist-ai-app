@@ -66,7 +66,7 @@ export default function App() {
     myHeaders.append(
       "apikey",
 
-      // ADDD YOUR API KEY HERE 
+      // ADD YOUR API KEY HERE 
       process.env.EXPO_PUBLIC_API_KEY
     );
     myHeaders.append(
