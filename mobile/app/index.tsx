@@ -1,11 +1,19 @@
 import { useEffect } from 'react';
 import { useRootNavigationState, Redirect, router } from 'expo-router';
-import { getItem } from 'utils/asyncStorage';
-import { Text, View } from 'react-native';
+import { clearAll, getItem } from 'utils/asyncStorage';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import Lottie from 'lottie-react-native';
+
+const { width, height } = Dimensions.get('window');
 
 const Index = () => {
   useEffect(() => {
-    checkOnboardingAndRedirect();
+    // Dev Mode Only !!
+    // clear AsyncStorage
+    clearAll().then(() => {
+      checkOnboardingAndRedirect();
+    })
+
   }, []);
 
   const checkOnboardingAndRedirect = async () => {
@@ -37,7 +45,30 @@ const Index = () => {
     }
   };
 
-  return null; // or any loading indicator while checking AsyncStorage
+  return (
+    <View style={styles.container}>
+      <View style={styles.lottie}>
+        <Lottie source={require('../assets/AnikiHamster.json')} autoPlay loop />
+      </View>
+    </View>
+  ); // or any loading indicator while checking AsyncStorage
 };
 
 export default Index;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    /* center item */
+    alignItems: 'center',
+    /* center horizontally */
+    justifyContent: 'center',
+    /* center vertically */
+    paddingHorizontal: 15
+  },
+  lottie: {
+    width: width * 0.9,
+    height: width
+  },
+});

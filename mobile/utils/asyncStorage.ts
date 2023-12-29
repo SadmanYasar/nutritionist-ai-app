@@ -24,3 +24,11 @@ export const removeItem = async (key) => {
     console.log("Error deleting value: ", error);
   }
 };
+
+export const clearAll = async () => {
+  try {
+    await AsyncStorage.clear();
+  } catch (error) {
+    console.log("Error clearing all values: ", error);
+  }
+};
