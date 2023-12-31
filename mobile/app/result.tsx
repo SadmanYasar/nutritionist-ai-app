@@ -14,7 +14,7 @@ const Result = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const api = "https://potential-acorn-wxgp7wqp66539679-3000.preview.app.github.dev/api/completion";
+    const api = process.env.EXPO_PUBLIC_AI_API_URL;
 
     const prompt = `You are a nutritionist. You are talking to a client who has the following diet preferences: ${dietPreference} The client also has the following diet restrictions: ${dietRestrictions}. The client asks you if the following product is healthy for them based on the information from nutrition label: ${extractedText}. You answer:`;
 
