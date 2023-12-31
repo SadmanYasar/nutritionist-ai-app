@@ -1,7 +1,7 @@
 // App.js file 
 
 import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
     View,
     Button,
@@ -15,10 +15,12 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
 import Lottie from 'lottie-react-native';
 import { router, useNavigation } from "expo-router";
+import { DietContext } from "context";
 
 const { width, height } = Dimensions.get('window');
 
 export default function Home() {
+    const { setExtractedText } = useContext(DietContext);
 
     // State to hold the selected image 
     // const [image, setImage] = useState(null);
@@ -101,8 +103,9 @@ export default function Home() {
             // Set the extracted text in state 
             // setExtractedText(result["all_text"]);
 
-            //pass the extracted text to the Completion screen and change route to it
-            router.push({ pathname: '/result', params: { extractedText: result["all_text"] } })
+            setExtractedText(result["all_text"]);
+
+            router.push({ pathname: '/result' })
         } catch (error) {
             console.log("error", error);
         }

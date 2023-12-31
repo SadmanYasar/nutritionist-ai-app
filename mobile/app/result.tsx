@@ -1,88 +1,111 @@
 import { DietContext } from 'context';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
-import React, { useContext, useEffect } from 'react';
-import { Platform } from 'react-native';
-import { Button, Text, TextInput, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import React, { useContext, useEffect, useState } from 'react';
+import { Platform, SafeAreaView, Pressable, Button, Text, TextInput, View, StyleSheet } from 'react-native';
 import { useCompletion } from 'react-native-vercel-ai';
 import { useDebouncedCallback } from 'use-debounce';
+import TypeWriterEffect from 'react-native-typewriter-effect';
 
-//get props from home.tsx
 const Result = () => {
-    const param = useLocalSearchParams();
-    const { extractedText } = param;
-    const { dietPreference, dietRestrictions } = useContext(DietContext);
+    const router = useRouter();
+    const { dietPreference, dietRestrictions, extractedText } = useContext(DietContext);
+    const [completion, setCompletion] = useState("");
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const {
-        completion,
-        input,
-        handleInputChange,
-        handleSubmit,
-        stop,
-        isLoading,
-        setInput,
-        setCompletion,
-        error
-    } = useCompletion({
-        api: 'http://localhost:3000/api/completion',
-    });
+    const api = "https://potential-acorn-wxgp7wqp66539679-3000.preview.app.github.dev/api/completion";
 
-    //make a debounced request call handleSubmit with extractedText
+    const prompt = `You are a nutritionist. You are talking to a client who has the following diet preferences: ${dietPreference} The client also has the following diet restrictions: ${dietRestrictions}. The client asks you if the following product is healthy for them based on the information from nutrition label: ${extractedText}. You answer:`;
+
+    //make a debounced request call to api with prompt
     const init = useDebouncedCallback(() => {
-        // const prompt = `This is a blog about Understanding and Using the Nutrition Facts Label. I am a nutritionist. I saw the following nutrition facts on a product: ${extractedText}. Someone asked me if this product is healthy for them with the same diet preference and restrictions mentioned. I answered:`;
-
-        const prompt = `
-        You are a nutritionist. You are talking to a client who has the following diet preferences: ${dietPreference} The client also has the following diet restrictions: ${dietRestrictions}. The client asks you if the following product is healthy for them based on the information from nutrition label: ${extractedText}. You answer:
-        `
+        console.log("Inside init");
         console.log("prompt: ", prompt);
-
+        console.log(api);
         handleSubmit(prompt);
-    }, 2000);
+    }, 1000);
 
     useEffect(() => {
+        console.log("Calling init");
         init();
     }, [])
 
-    return (
-        <View style={{ margin: 10 }}>
-            <View>
-                {isLoading && Platform.OS !== 'web' ? (
-                    <View style={{ marginVertical: 7, marginBottom: 12 }}>
-                        <Text>Loading...</Text>
-                    </View>
-                ) : (
-                    <View style={{ marginVertical: 7, marginBottom: 12 }}>
-                        <Text>Completion result: {completion}</Text>
-                    </View>
-                )}
-            </View>
-            <View
-                style={{ height: 1, backgroundColor: 'gray', marginVertical: 25 }}
-            />
+    const handleSubmit = async (prompt) => {
+        console.log("Inside handleSubmit");
+        setLoading(true); // Add loading state
 
-            <View style={{ width: '100%', flexDirection: 'row' }}>
-                {/* <TextInput
-                    style={{
-                        borderWidth: 1,
-                        borderColor: 'black',
-                        padding: 10,
-                        width: '67%',
-                        paddingHorizontal: 20,
-                        borderRadius: 5,
-                        marginRight: 3,
-                    }}
-                    value={input}
-                    placeholder="Say something..."
-                    onChangeText={(e) => {
-                        handleInputChange(
-                            Platform.OS === 'web' ? { target: { value: e } } : e
-                        );
-                    }}
-                />
-                <Button onPress={handleSubmit} title="Send" /> */}
-                <Button onPress={stop} title="Stop" />
-            </View>
-        </View>
-    );
+        try {
+            const response = await fetch(api, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt: prompt })
+            });
+
+            const data = await response.json();
+            console.log("data: ", data);
+            setCompletion(data.data); // Update completion state
+        } catch (error) {
+            console.error("Error:", error);
+            setError(error); // Update error state
+        } finally {
+            setLoading(false); // Set loading state to false
+        }
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {loading && <Text style={styles.text}>Loading...</Text>}
+            {completion && <>
+                <TypeWriterEffect content={completion} style={styles.text} />
+                <Pressable style={styles.button} onPress={() => router.replace('/home')}>
+                    <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+                        Home
+                    </Text>
+                </Pressable>
+            </>}
+            {error && <Text style={styles.text}>An Error Occurred.</Text>}
+        </SafeAreaView>
+    )
 };
 
 export default Result;
+
+const styles = StyleSheet.create({
+    container: {
+        display: "flex",
+        alignContent: "center",
+        alignItems: "center",
+        justifyContent: "space-evenly",
+        backgroundColor: "#fff",
+        paddingHorizontal: 20,
+        height: "100%",
+    },
+    text: {
+        fontSize: 18,
+        color: "black",
+    },
+    iconContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-evenly',
+    },
+    icon: {
+        /* set background color */
+        backgroundColor: "#000000",
+        /* set border radius */
+        borderRadius: 10,
+        padding: 10,
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'black',
+    },
+});

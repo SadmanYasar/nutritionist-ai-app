@@ -5,15 +5,19 @@ import { getItem, setItem } from "utils/asyncStorage";
 type DietContextType = {
   dietPreference: string[];
   dietRestrictions: string[];
+  extractedText: string;
   setDietPreference: (dietPreference: string[]) => void;
   setDietRestrictions: (dietRestrictions: string[]) => void;
+  setExtractedText: (extractedText: string) => void;
 };
 
 export const DietContext = React.createContext<DietContextType>({
   dietPreference: [],
   dietRestrictions: [],
+  extractedText: "",
   setDietPreference: () => { },
   setDietRestrictions: () => { },
+  setExtractedText: () => { },
 });
 
 export const DietProvider = ({ children }) => {
@@ -21,6 +25,7 @@ export const DietProvider = ({ children }) => {
   const [dietRestrictions, setDietRestrictions] = useState<string | string[]>(
     []
   );
+  const [extractedText, setExtractedText] = useState<string>("");
 
   useEffect(() => {
     const loadDietData = async () => {
@@ -66,8 +71,10 @@ export const DietProvider = ({ children }) => {
       value={{
         dietPreference,
         dietRestrictions,
+        extractedText,
         setDietPreference,
         setDietRestrictions,
+        setExtractedText,
       }}
     >
       {children}
