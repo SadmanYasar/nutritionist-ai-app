@@ -27,8 +27,8 @@ const Index = () => {
         return;
       }
 
-      const dietaryPreference = await getItem('dietaryPreference');
-      const dietaryRestrictions = await getItem('dietaryRestrictions');
+      const dietaryPreference = await getItem('dietPreference');
+      const dietaryRestrictions = await getItem('dietRestrictions');
 
       if (!dietaryPreference || !dietaryRestrictions) {
         // return <Redirect href="/dietPreferences" />;

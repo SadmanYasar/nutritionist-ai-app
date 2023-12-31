@@ -24,7 +24,7 @@ export default function TabLayout() {
                         return focused ? (
                             <Ionicons
                                 name="home-sharp"
-                                color={"#000080"}
+                                color={"#000000"}
                                 size={30}
                             />
                         ) : (
@@ -45,7 +45,7 @@ export default function TabLayout() {
                         return focused ? (
                             <Ionicons
                                 name="settings-sharp"
-                                color={"#000080"}
+                                color={"#000000"}
                                 size={30}
                             />
                         ) : (

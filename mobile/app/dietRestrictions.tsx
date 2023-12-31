@@ -1,9 +1,10 @@
 // DietRestrictionsScreen.jsx
-import React, { useState } from 'react';
-import { View, Text, Button } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, Button, StyleSheet, Pressable } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from 'expo-router';
+import { DietContext } from 'context';
 
 const DietRestrictionsScreen = () => {
     const [open, setOpen] = useState(false);
@@ -13,26 +14,22 @@ const DietRestrictionsScreen = () => {
         { label: 'Lactose-Free', value: 'Lactose-Free' },
         // Add more options as needed
     ]);
+    const { setDietRestrictions } = useContext(DietContext);
 
     const handleNext = async () => {
         // Save selected dropdown values to AsyncStorage
         console.log("values: ", value);
-        await AsyncStorage.setItem('dietaryRestrictions', JSON.stringify(value));
+        // await AsyncStorage.setItem('dietRestrictions', JSON.stringify(value));
 
-        //todo - save the value to context
+        //save the value to context
+        setDietRestrictions(value);
 
         // Change route to home using Expo Router v2
         router.replace('/home');
     };
 
     return (
-        <View style={{
-            backgroundColor: '#FFFFFF',
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingHorizontal: 15
-        }}>
+        <View style={styles.container}>
             <Text>Select your dietary restriction(s):</Text>
             <DropDownPicker
                 open={open}
@@ -43,12 +40,49 @@ const DietRestrictionsScreen = () => {
                 setItems={setItems}
                 multiple={true}
                 mode="BADGE"
-                badgeDotColors={["#e76f51", "#00b4d8", "#e9c46a", "#e76f51", "#8ac926", "#00b4d8", "#e9c46a"]}
+                badgeDotColors={["#e76f51", "#8ac926"]}
+                style={styles.dropDown}
             />
-
-            <Button title="Next" onPress={handleNext} />
+            <Pressable style={styles.button} onPress={handleNext}>
+                <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+                    Next
+                </Text>
+            </Pressable>
         </View>
     );
 };
 
 export default DietRestrictionsScreen;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        /* center item */
+        alignItems: 'center',
+        /* center horizontally */
+        justifyContent: 'center',
+        /* center vertically */
+        paddingHorizontal: 15
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
+        backgroundColor: 'black',
+    },
+    textHeading: {
+        fontSize: 18,
+        color: "black",
+        textAlign: "center",
+        fontWeight: "bold"
+    },
+    dropDown: {
+        marginVertical: 20,
+        fontSize: 16,
+        color: "black",
+    }
+})

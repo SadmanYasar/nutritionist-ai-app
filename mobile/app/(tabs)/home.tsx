@@ -101,7 +101,7 @@ export default function Home() {
             // Set the extracted text in state 
             // setExtractedText(result["all_text"]);
 
-            //todo - pass the extracted text, form values from context to the Completion screen and change route to it
+            //pass the extracted text to the Completion screen and change route to it
             router.push({ pathname: '/result', params: { extractedText: result["all_text"] } })
         } catch (error) {
             console.log("error", error);
@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         color: "black",
         textAlign: "center",
+        fontWeight: "bold",
     },
     lottie: {
         width: width * 0.9,
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         /* set background color */
-        backgroundColor: "#000080",
+        backgroundColor: "#000000",
         /* set border radius */
         borderRadius: 10,
         padding: 10,
